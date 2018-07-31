@@ -1,6 +1,8 @@
 dist: trusty
 sudo: required  # gives more RAM (otherwise memory error for TOM)
 language: python
+services:
+  - docker
 matrix:
   include:
   - python: "2.7"
@@ -13,7 +15,8 @@ before_install:
 install:
   - pip install .
 script:
-  - TractSeg -i examples/Diffusion_mrtrix_peaks.nii.gz --skip_peak_extraction --single_orientation
-  - TractSeg -i examples/Diffusion_mrtrix_peaks.nii.gz --skip_peak_extraction --output_type TOM --single_orientation
-  - TractSeg -i examples/Diffusion_mrtrix_peaks.nii.gz --skip_peak_extraction --output_type endings_segmentation --single_orientation
+  - docker run -v $TRAVIS_BUILD_DIR/examples:/data -it wasserth/trac_container:v1.4 TractSeg -i /data/Diffusion.nii.gz -o /data
+#  - TractSeg -i examples/Diffusion_mrtrix_peaks.nii.gz --skip_peak_extraction --single_orientation
+#  - TractSeg -i examples/Diffusion_mrtrix_peaks.nii.gz --skip_peak_extraction --output_type TOM --single_orientation
+#  - TractSeg -i examples/Diffusion_mrtrix_peaks.nii.gz --skip_peak_extraction --output_type endings_segmentation --single_orientation
   - pytest
